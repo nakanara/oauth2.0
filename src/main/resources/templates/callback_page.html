@@ -23,7 +23,8 @@ Friends who has also granted client-implicit
 
         var fragment = window.location.hash;
         var res = getResponse(fragment);
-        window.location.hash = '_#';
+        // 보안을 위한 플래그 _# 으로 변경 처리
+        // window.location.hash = '_#';
 
         if(res.hasError()) {
             $("<div>Error trying to obtain user's authorization!</div>").insertBefore('#friends');
@@ -65,14 +66,16 @@ Friends who has also granted client-implicit
         $.ajax({
             url:url,
             beforeSend: function(xhr){
-                console.log('before');
                 xhr.setRequestHeader("Authorization", "Bearer " + accessToken);
             },
             success: function(result){
+                console.log('success');
+                console.log(result);
                 var friends = result.data;
                 callback(friends);
             },
             error: function(jqXHR, textStatus, errorThrown){
+                console.log('error');
                 console.log(textStatus);
             }
         });

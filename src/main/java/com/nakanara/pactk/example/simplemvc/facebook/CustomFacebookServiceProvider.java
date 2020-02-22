@@ -31,7 +31,7 @@ public class CustomFacebookServiceProvider extends AbstractOAuth2ServiceProvider
     @Override
     public Facebook getApi(String accessToken) {
         FacebookTemplate template = new FacebookTemplate(accessToken, appNamespace);
-        template.setApiVersion(apiVersion);
+//        template.setApiVersion(apiVersion);
 
         return template;
     }

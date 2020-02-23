@@ -28,4 +28,5 @@ public class SimplemvcApplication {
 	public ResponseEntity<String> getMessage(){
 		return ResponseEntity.ok("Hello!");
 	}
+
 }

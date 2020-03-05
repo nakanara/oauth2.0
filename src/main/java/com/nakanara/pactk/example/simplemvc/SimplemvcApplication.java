@@ -14,19 +14,4 @@ public class SimplemvcApplication {
 		SpringApplication.run(SimplemvcApplication.class, args);
 	}
 
-	@GetMapping("/")
-	public String client(){
-		return "client";
-	}
-
-	@GetMapping("/callback")
-	public String callback(){
-		return "callback_page";
-	}
-
-	@GetMapping("/message")
-	public ResponseEntity<String> getMessage(){
-		return ResponseEntity.ok("Hello!");
-	}
-
 }

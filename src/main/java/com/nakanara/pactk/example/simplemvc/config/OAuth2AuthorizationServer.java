@@ -13,7 +13,8 @@ public class OAuth2AuthorizationServer extends AuthorizationServerConfigurerAdap
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
-                .withClient("clientapp").secret("123456")
+                .withClient("clientapp")
+                .secret("123456")
                 .redirectUris("http://localhost:9000/callback")
                 .authorizedGrantTypes("authorization_code")
                 .scopes("read_profile", "read_contacts");

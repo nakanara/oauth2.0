@@ -93,6 +93,69 @@ curl -X GET http://localhost:8080/api/profile -H "authorization: Bearer 147dab74
 {"name":"admin","email":"admin@mailnator.com"}
 ```
 
+
+## OAuth 2.0으로의 전환을 위한 리소스 소유자 패스워드 자격증명 그랜트 타입
+
+> 해당 그랜트 타입은 사용자의 자격증명 정보를 요구하기 때문에 가능하면 사용하지 말아야 한다(OAuth 2.0은 접근 권한을 위임함으로써 이를 해결). 하지만 사용자의 자격증명 정보를 공유하는 방식에서 OAuth 2.0으로 전환할 때 전략적으로 언급할 필요가 있다. 또한 클라이언트와 OAuth 2.0 프로바이더가 동일한 솔루션에 속할 때는 안전하게 사용될 수도 있다.
+
+> 가능한 사용하지 말며, OAuth 2.0 프로바이더가 동일 솔루션일 경우만 사용 권고, 사용자는 자신의 자격증명이 공유되는 것을 신뢰할 수 있어야 함, 또한 애플리케이션은 액세스 토큰을 얻기 위해 전달한 사용자 이름과 패스워드를 저장하지 않고 버려야 하는 점
+
+
+패스워드 방식일 경우 `AuthenticatioinManager` 필요, Config override필요
+
+```java
+@Configuration
+@EnableAuthorizationServer
+public class OAuth2AuthorizationServer extends AuthorizationServerConfigurerAdapter {
+
+    // password 인가시 필요
+    @Autowired
+    private AuthenticationManager authenticationManager;       
+
+    @Override
+    public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+        clients.inMemory()
+                .withClient("clientapp")
+                .secret("123456")
+                .redirectUris("http://localhost:9000/callback")
+                .authorizedGrantTypes("password") // Password 인가 그랜트 타입
+                .scopes("read_profile", "read_contacts");
+    }
+
+    // password 인가시 
+    @Override
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+        endpoints.authenticationManager(authenticationManager);
+    }
+
+}
+```
+
+1. 인증 
+
+```sh
+curl -X POST --user clientapp:123456 http://localhost:8080/oauth/token -H "accept: application/json" -H "content-type: application/x-www-form-urlencoded" -d "grant_type=password&username=admin&password=123&scope=read_profile"
+```
+
+결과
+
+"토큰 만료시간을 설정하지 않을 경우 43200초로 설정"
+
+```json
+{   
+    "access_token":"d9b1283b-d840-4868-89c2-eb9ac643bca6"
+    ,"token_type":"bearer"
+    ,"expires_in":43199
+    ,"scope":"read_profile"
+}
+```
+
+2. API 호출
+
+```sh
+curl -X GET http://localhost:8080/api/profile -H "authorization: Bearer d9b1283b-d840-4868-89c2-eb9ac643bca6"
+```
+
 ### 인증 종류
 Authorization Code Grant
 

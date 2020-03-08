@@ -37,11 +37,11 @@ public class OAuth2AuthorizationServer extends AuthorizationServerConfigurerAdap
 ```
 ### 테스트 
 
-1. 테스트 URL 
+1  테스트 URL 
 
 http://localhost:8080/api/profile
 
-2. 인증 시작
+2 인증 시작
 
 http://localhost:8080/oauth/authorize?client_id=clientapp&redirect_url=http://localhost:9000/callback&response_type=code&scope=read_profile
 
@@ -49,12 +49,12 @@ http://localhost:8080/oauth/authorize?client_id=clientapp&redirect_url=http://lo
 
 
 ```shell script
-# 3. 인증 진행
+# 3 인증 진행
 curl -X POST --user clientapp:123456 http://localhost:8080/oauth/token -H "content-type: application/x-www-form-urlencoded" -d "code=Unm7gL&grant_type=authorization_code&redirect_url=http://localhost:9000/callback&response_type=code&scope=read_profile"
 # 결과
 # {"access_token":"92221944-56a4-4531-a3d5-2132c31c49de","token_type":"bearer","expires_in":43012,"scope":"read_profile"}
 
-# 4. 프로파일
+# 4 프로파일
 curl -X GET http://localhost:8080/api/profile -H "authorization: Bearer 92221944-56a4-4531-a3d5-2132c31c49de"
 # 결과
 # {"name":"admin","email":"admin@mailnator.com"}

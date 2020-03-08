@@ -61,7 +61,37 @@ curl -X GET http://localhost:8080/api/profile -H "authorization: Bearer 92221944
 ```
 
 
-실제 OAuth 2. 프로바이더를 설정할 때는 모든 클라이언트 세부 정보를 메모리상에 선언해서 저장하지 말고 데이터베이스를 이용해서 저장하는 방식 고려
+> OAuth 2.0 프로바이더를 설정할 때는 모든 클라이언트 세부 정보를 메모리상에 선언해서 저장하지 말고 데이터베이스를 이용해서 저장하는 방식 고려
+
+## 암시적 그랜트 타입 지원
+
+
+> 암묵적 그랜드 타입의 경우 OAuth 2.0 스펙에 의거해서 액세스 토큰을 발급할 수 없음, 브라우저 내에서 실행되는 애플리케이션을 이용할 때는 항상 사용자가 있어야 하기 때문에 사용자는 필요하다면 언제나 서드파티 애플리케이션에 권한을 위임하기 때문에 암시적 그랜트 타입의 동작 방식이 적합하다고 볼 수 있음.
+또한 인가 서버는 사용자의 세션을 인식하기 위한 조건과 리소스 소유자에게 인증을 수행하게 요청하거나 클라이언트에 권한을 다시 요청하지 않도록 많은 조건을 갖고 있다. 암시적 그랜트 타입에서 리프레시 토큰을 발급하지 않는 또 다른 이유는 암시적 그랜트 타입이 리프레시 토큰과 같은 기밀 데이터를 보호할 수 없는 애플리케이션을 위한 것이기 때문
+
+
+1. 인증 
+
+```
+http://localhost:8080/oauth/authorize?client_id=clientapp&redirect_url=http://localhost:9000/callback&response_type=token&scope=read_profile&state=xyz
+```
+
+결과
+
+```
+http://localhost:9000/callback#access_token=e379da32-d64b-4e64-a1d5-3759e655da18&token_type=bearer&state=xyz&expires_in=119
+```
+
+2. API 호출
+```
+curl -X GET http://localhost:8080/api/profile -H "authorization: Bearer 147dab74-f512-4af5-bb36-ecd19b4ffeed"
+
+# 결과 - 시간 초과
+{"error":"invalid_token","error_description":"Access token expired: e379da32-d64b-4e64-a1d5-3759e655da18"}
+
+# 성공
+{"name":"admin","email":"admin@mailnator.com"}
+```
 
 ### 인증 종류
 Authorization Code Grant

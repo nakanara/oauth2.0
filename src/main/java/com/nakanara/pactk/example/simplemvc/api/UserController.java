@@ -9,16 +9,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class UserController {
 
-    @RequestMapping("/api/profile")
+    @RequestMapping("/user")
     public ResponseEntity<UserProfile> profile(){
         User user = (User) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
 
         String email = user.getUsername() + "@mailnator.com";
 
-        UserProfile profile = new UserProfile();
-        profile.setName(user.getUsername());
-        profile.setEmail(email);
+        UserProfile profile = new UserProfile(user.getUsername(), email);
 
         return ResponseEntity.ok(profile);
     }

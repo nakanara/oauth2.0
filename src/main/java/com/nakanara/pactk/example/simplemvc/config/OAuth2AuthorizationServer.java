@@ -22,7 +22,8 @@ public class OAuth2AuthorizationServer extends AuthorizationServerConfigurerAdap
         clients.inMemory()
                 .withClient("clientapp")  //
                 .secret("123456")
-                .authorizedGrantTypes("authorization-code", "password", "refresh_token") // 인가크도, 패스워드, 리프레쉬 토큰
+                // 인가크도, 패스워드, 리프레시 토큰
+                .authorizedGrantTypes("authorization-code", "password", "refresh_token")
                 .scopes("read_profile", "read_contacts")
                 .accessTokenValiditySeconds(120);
     }

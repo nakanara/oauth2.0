@@ -4,6 +4,9 @@ public class UserProfile {
     private String name;
     private String email;
 
+    public UserProfile(){
+
+    }
     public UserProfile(String name, String email) {
         setName(name);
         setEmail(email);
